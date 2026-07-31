@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ s.title }} &mdash; The Dragonseed Company{% endblock %}
+
+{% block content %}
+<article class="row g-4">
+    <div class="col-md-5">
+        <img src="{{ url_for('static', filename='images/' + s.image) }}" class="quest-img"
+             alt="Illustration for {{ s.title }}">
+    </div>
+    <div class="col-md-7">
+        <h1>{{ s.title }}</h1>
+        <p>
+            <span class="badge type-badge">{{ s.type }}</span>
+            <span class="badge diff-{{ s.difficulty }}">{{ s.difficulty }}</span>
+            <span class="badge duration-badge">{{ s.duration }} minutes</span>
+        </p>
+        <p>{{ s.description }}</p>
+
+        <dl class="row session-facts">
+            <dt class="col-sm-3">Day</dt><dd class="col-sm-9">{{ DAYS[s.day] }}</dd>
+            <dt class="col-sm-3">Starts at</dt><dd class="col-sm-9">{{ s.start_time }}</dd>
+            <dt class="col-sm-3">Location</dt><dd class="col-sm-9">{{ s.location }}</dd>
+        </dl>
+
+        <h2 class="h5">Party places</h2>
+        <ul class="list-unstyled">
+            {% for role, n in s.free.items() %}
+            <li>{{ role }}: {{ n }} of {{ CAPACITY[role] }} places free {% if n == 0 %}<strong>(full)</strong>{% endif %}</li>
+            {% endfor %}
+        </ul>
+
+        {% if s.start <= NOW %}
+        <p class="text-muted">This session has already started &mdash; joining is closed.</p>
+        {% elif not current_user.is_authenticated %}
+        <p><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">register</a> to join this quest.</p>
+        {% elif current_user.role != 'adventurer' %}
+        <p class="text-muted">Guild staff cannot join quest sessions.</p>
+        {% elif mine %}
+        <p>You joined this session as <strong>{{ mine.role }}</strong> with {{ mine.places }} place(s).
+           Manage it from <a href="{{ url_for('profile') }}">your profile</a>.</p>
+        {% else %}
+        <form method="POST" action="{{ url_for('join', session_id=s.id) }}" class="row g-2 align-items-end join-form">
+            <div class="col-auto">
+                <label class="form-label" for="role">Role</label>
+                <select class="form-select" name="role" id="role" required>
+                    <option value="" selected disabled>Choose...</option>
+                    {% for role, n in s.free.items() %}
+                    <option value="{{ role }}" {% if n == 0 %}disabled{% endif %}>{{ role }}{% if n == 0 %} (full){% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label" for="places">Places</label>
+                <select class="form-select" name="places" id="places" required>
+                    <option value="1">1 &mdash; just me</option>
+                    <option value="2">2 &mdash; with a companion</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary">Join quest</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</article>
+
+{% if others %}
+<section class="mt-4">
+    <h2 class="h5">Other sessions of this quest</h2>
+    <ul>
+        {% for o in others %}
+        <li>
+            <a href="{{ url_for('session_detail', session_id=o.id) }}">{{ DAYS[o.day] }} at {{ o.start_time }}</a>
+            &mdash; {{ o.location }}
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% if participants is not none %}
+<section class="mt-4">
+    <h2 class="h5">Current participations</h2>
+    {% if participants %}
+    <table class="table table-sm w-auto">
+        <thead><tr><th>Adventurer</th><th>Role</th><th>Places</th></tr></thead>
+        <tbody>
+            {% for p in participants %}
+            <tr><td>{{ p.username }}</td><td>{{ p.role }}</td><td>{{ p.places }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No adventurer has joined yet.</p>
+    {% endif %}
+</section>
+{% endif %}
+{% endblock %}

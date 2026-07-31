@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}The Dragonseed Company{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/riddle.jpg') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">&#128009; The Dragonseed Company</a>
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Quest program</a></li>
+            </ul>
+            <span class="navbar-text sim-clock me-3">Guild time: {{ DAYS[SIM_DAY] }} {{ SIM_TIME }}</span>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">{{ current_user.username }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="container my-4">
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="text-center py-3">
+    <p class="mb-0">The Dragonseed Company &mdash; low-born riders chasing masterless dragons, one fictional week at a time.</p>
+    <p class="mb-0"><small>Designed for desktop browsers.</small></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Guild Master &mdash; The Dragonseed Company{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Guild Master's ledger</h1>
+    <p class="mb-0">
+        <a class="btn btn-primary" href="{{ url_for('new_quest') }}">New quest</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('edit_session') }}">Schedule session</a>
+    </p>
+</div>
+<p>Sessions can be edited or cancelled only while no adventurer has joined them.</p>
+
+{% if unscheduled %}
+<section class="mb-4">
+    <h2 class="h5">Quests without sessions yet</h2>
+    <ul>
+        {% for q in unscheduled %}
+        <li>{{ q.title }} &mdash; <a href="{{ url_for('edit_session') }}">schedule a session</a></li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+{% for title, group in sessions|groupby('title') %}
+<section class="mb-4">
+    <h2 class="h4">
+        {{ title }}
+        <span class="badge type-badge">{{ group[0].type }}</span>
+        <span class="badge diff-{{ group[0].difficulty }}">{{ group[0].difficulty }}</span>
+    </h2>
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr>
+                <th>Day</th><th>Starts</th><th>Location</th>
+                <th>Warrior</th><th>Mage</th><th>Healer</th>
+                <th>Reserved</th><th>Top role</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in group %}
+            <tr>
+                <td>{{ DAYS[s.day] }}</td>
+                <td>{{ s.start_time }}</td>
+                <td>{{ s.location }}</td>
+                {% for role in CAPACITY %}
+                <td>{{ s.taken[role] }}/{{ CAPACITY[role] }}</td>
+                {% endfor %}
+                <td>{{ s.booked }}</td>
+                {# sort the roles by how many places are taken, then grab the name of the highest one #}
+                <td>{% if s.booked %}{{ (s.taken|dictsort(by='value')|last)[0] }}{% else %}&mdash;{% endif %}</td>
+                <td>
+                    {% if s.booked == 0 %}
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('edit_session', session_id=s.id) }}">Edit</a>
+                    <form class="d-inline" method="POST" action="{{ url_for('delete_session', session_id=s.id) }}">
+                        <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                    </form>
+                    {% else %}
+                    <span class="badge locked-badge">has party</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endfor %}
+{% endblock %}

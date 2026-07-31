@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ code }} &mdash; The Dragonseed Company{% endblock %}
+
+{% block content %}
+<section class="error-page text-center">
+    <p class="error-code">{{ code }}</p>
+    <h1>{{ title }}</h1>
+    <p class="lead">{{ message }}</p>
+    <a class="btn btn-primary" href="{{ url_for('index') }}">Back to the quest program</a>
+</section>
+{% endblock %}

@@ -1,0 +1,174 @@
+/* The Dragonseed Company - custom theme on top of Bootstrap */
+
+/* Targaryen black/red/gold palette, swapped in for Bootstrap's defaults */
+:root {
+    --ink: #241f1f;
+    --parchment: #f3ece1;
+    --valyrian: #1a1414;
+    --dragonfire: #8b1e1e;
+    --ember: #b34a35;
+    --gold: #c9a227;
+}
+
+body {
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;    /* keeps the footer at the bottom on short pages */
+}
+
+h1, h2, h3 {
+    color: var(--valyrian);
+    letter-spacing: .03em;
+}
+
+a {
+    color: var(--dragonfire);
+}
+
+/* navbar */
+.navbar {
+    background-color: var(--valyrian);
+    border-bottom: 4px solid var(--gold);
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+}
+
+.sim-clock {
+    color: var(--gold);
+    font-weight: bold;
+}
+
+/* overriding Bootstrap's own button variables instead of writing new classes */
+.btn-primary {
+    --bs-btn-bg: var(--dragonfire);
+    --bs-btn-border-color: var(--dragonfire);
+    --bs-btn-hover-bg: #6b1616;
+    --bs-btn-hover-border-color: #6b1616;
+    --bs-btn-active-bg: #6b1616;
+    --bs-btn-active-border-color: #6b1616;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--dragonfire);
+    --bs-btn-border-color: var(--dragonfire);
+    --bs-btn-hover-bg: var(--dragonfire);
+    --bs-btn-hover-border-color: var(--dragonfire);
+    --bs-btn-active-bg: var(--dragonfire);
+    --bs-btn-active-border-color: var(--dragonfire);
+}
+
+/* homepage */
+.hero {
+    padding: 1.5rem 0 0.5rem;
+    text-align: center;
+}
+
+.hero p {
+    font-style: italic;
+}
+
+.filter-bar {
+    background-color: #fff;
+    border: 1px solid #d9cfb8;
+    border-radius: .5rem;
+    padding: .75rem 1rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.day-heading {
+    border-bottom: 2px solid var(--dragonfire);
+    padding-bottom: .2rem;
+    margin-top: 1.5rem;
+}
+
+tr.past {
+    opacity: .5;
+}
+
+/* badges */
+.badge {
+    font-variant: small-caps;
+}
+
+.type-badge { background-color: var(--dragonfire); }
+.duration-badge { background-color: var(--valyrian); }
+.diff-easy { background-color: #3e7a3e; }
+.diff-medium { background-color: var(--gold); color: var(--ink); }
+.diff-hard { background-color: var(--ember); }
+.diff-legendary { background-color: #5e3a87; }
+.role-badge { background-color: var(--valyrian); }
+.role-badge.full { background-color: #8a8a8a; }
+.locked-badge { background-color: #8a8a8a; }
+
+/* session detail */
+.quest-img {
+    width: 100%;
+    border: 4px solid var(--valyrian);
+    border-radius: .5rem;
+}
+
+.session-facts dt {
+    color: var(--dragonfire);
+}
+
+/* forms */
+.auth-card {
+    margin-top: 3rem;
+    border: 1px solid #d9cfb8;
+}
+
+.img-pick {
+    text-align: center;
+    cursor: pointer;
+}
+
+.img-pick img {
+    display: block;
+    margin-top: .3rem;
+    border: 3px solid transparent;
+    border-radius: .4rem;
+}
+
+.img-pick input:checked + img {
+    border-color: var(--dragonfire);
+}
+
+/* error pages */
+.error-page {
+    padding: 3rem 0;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: bold;
+    color: var(--dragonfire);
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+/* council statistics */
+.stat-number {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: var(--valyrian);
+    margin-bottom: 0;
+}
+
+.stat-cards .card {
+    border: 1px solid #d9cfb8;
+}
+
+footer {
+    background-color: var(--valyrian);
+    color: var(--parchment);
+    margin-top: 3rem;
+}

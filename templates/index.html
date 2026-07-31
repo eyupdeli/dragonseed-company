@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <h1>Weekly Quest Program</h1>
+    <p>One fictional week, three coastal strongholds, dragons still waiting to be claimed. Pick a quest and join the Company.</p>
+</section>
+
+<section class="filter-bar">
+    <form method="GET" action="{{ url_for('index') }}" class="row g-2 align-items-end">
+        <div class="col">
+            <label class="form-label" for="day">Day</label>
+            <select class="form-select" name="day" id="day">
+                <option value="">All days</option>
+                {% for d in DAYS %}
+                <option value="{{ loop.index0 }}" {% if filters.get('day') == loop.index0|string %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col">
+            <label class="form-label" for="type">Quest type</label>
+            <select class="form-select" name="type" id="type">
+                <option value="">All types</option>
+                {% for t in TYPES %}
+                <option {% if filters.get('type') == t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col">
+            <label class="form-label" for="difficulty">Difficulty</label>
+            <select class="form-select" name="difficulty" id="difficulty">
+                <option value="">All levels</option>
+                {% for d in DIFFICULTIES %}
+                <option {% if filters.get('difficulty') == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col">
+            <label class="form-label" for="role">Available role</label>
+            <select class="form-select" name="role" id="role">
+                <option value="">Any role</option>
+                {% for r in CAPACITY %}
+                <option {% if filters.get('role') == r %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">Filter</button>
+            <a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Reset</a>
+        </div>
+    </form>
+    <p class="text-muted small mb-0 mt-2">
+        Free places per role &mdash; W: Warrior, M: Mage, H: Healer. Greyed-out sessions already
+        started (guild time is {{ DAYS[SIM_DAY] }} {{ SIM_TIME }}).
+    </p>
+</section>
+
+{% if sessions %}
+{# groupby needs the list already sorted by day, which get_sessions() takes care of #}
+{% for day, group in sessions|groupby('day') %}
+<section>
+    <h2 class="day-heading h4">{{ DAYS[day] }}</h2>
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Starts</th><th>Quest</th><th>Type</th><th>Difficulty</th>
+                <th>Location</th><th>Free places</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in group %}
+            <tr {% if s.start <= NOW %}class="past"{% endif %}>
+                <td>{{ s.start_time }}</td>
+                <td>{{ s.title }}</td>
+                <td><span class="badge type-badge">{{ s.type }}</span></td>
+                <td><span class="badge diff-{{ s.difficulty }}">{{ s.difficulty }}</span></td>
+                <td>{{ s.location }}</td>
+                <td>
+                    {% for role, n in s.free.items() %}
+                    <span class="badge role-badge {% if n == 0 %}full{% endif %}">{{ role[0] }} {{ n }}</span>
+                    {% endfor %}
+                </td>
+                <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('session_detail', session_id=s.id) }}">Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endfor %}
+{% else %}
+<p>No quest sessions match these filters.</p>
+{% endif %}
+{% endblock %}

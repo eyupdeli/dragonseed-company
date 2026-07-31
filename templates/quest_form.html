@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}New quest &mdash; The Dragonseed Company{% endblock %}
+
+{% block content %}
+<h1>Create a new quest</h1>
+<p>Careful, Guild Master: once created, a quest cannot be modified.</p>
+
+<form method="POST" class="col-md-8">
+    <div class="mb-3">
+        <label class="form-label" for="title">Title</label>
+        <input class="form-control" type="text" name="title" id="title" required maxlength="80">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="description">Short description</label>
+        <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label class="form-label" for="type">Type</label>
+            <select class="form-select" name="type" id="type" required>
+                {% for t in TYPES %}<option>{{ t }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col mb-3">
+            <label class="form-label" for="difficulty">Difficulty</label>
+            <select class="form-select" name="difficulty" id="difficulty" required>
+                {% for d in DIFFICULTIES %}<option>{{ d }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col mb-3">
+            <label class="form-label" for="duration">Duration (minutes)</label>
+            <input class="form-control" type="number" name="duration" id="duration"
+                   required min="15" max="480" step="5" value="90">
+        </div>
+    </div>
+    <fieldset class="mb-3">
+        <legend class="form-label">Illustration</legend>
+        <div class="d-flex gap-3 flex-wrap">
+            {% for img in IMAGES %}
+            <label class="img-pick">
+                <input type="radio" name="image" value="{{ img }}" required {% if loop.first %}checked{% endif %}>
+                <img src="{{ url_for('static', filename='images/' + img) }}" alt="{{ img }}" width="100">
+            </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    <button class="btn btn-primary">Create quest</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('manage') }}">Back</a>
+</form>
+{% endblock %}

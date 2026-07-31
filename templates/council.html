@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Guild Council &mdash; The Dragonseed Company{% endblock %}
+
+{% block content %}
+<h1>Guild Council &mdash; weekly overview</h1>
+<p>Read-only administration page with the general activity of the guild.</p>
+
+<section class="row g-3 stat-cards">
+    <div class="col">
+        <div class="card text-center"><div class="card-body">
+            <p class="stat-number">{{ stats.adventurers }}</p>
+            <p class="card-text">adventurers</p>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card text-center"><div class="card-body">
+            <p class="stat-number">{{ stats.quests }}</p>
+            <p class="card-text">quests</p>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card text-center"><div class="card-body">
+            <p class="stat-number">{{ stats.sessions }}</p>
+            <p class="card-text">quest sessions</p>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card text-center"><div class="card-body">
+            <p class="stat-number">{{ stats.participations }}</p>
+            <p class="card-text">participations</p>
+        </div></div>
+    </div>
+</section>
+
+<section class="row g-4 mt-1">
+    <div class="col-md-6">
+        <h2 class="h5">Reserved places per role</h2>
+        <table class="table table-sm">
+            <thead><tr><th>Role</th><th>Reserved places</th></tr></thead>
+            <tbody>
+                {% for r in stats.per_role %}
+                <tr><td>{{ r.role }}</td><td>{{ r.places }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>
+            Most popular quest type:
+            {% if stats.top_type %}<strong>{{ stats.top_type.type }}</strong> ({{ stats.top_type.places }} places){% else %}&mdash;{% endif %}
+        </p>
+        <p>
+            Busiest session:
+            {% if stats.top_session %}
+            <strong>{{ stats.top_session.title }}</strong> on {{ DAYS[stats.top_session.day] }}
+            at {{ stats.top_session.start_time }} ({{ stats.top_session.places }} places)
+            {% else %}&mdash;{% endif %}
+        </p>
+    </div>
+    <div class="col-md-6">
+        <h2 class="h5">Registered adventurers</h2>
+        <table class="table table-sm">
+            <thead><tr><th>Username</th><th>Sessions joined</th><th>Places reserved</th></tr></thead>
+            <tbody>
+                {% for a in adventurers %}
+                <tr><td>{{ a.username }}</td><td>{{ a.sessions_joined }}</td><td>{{ a.places_reserved }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="mt-3">
+    <h2 class="h5">All quest sessions of the week</h2>
+    <table class="table table-sm table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Day</th><th>Starts</th><th>Quest</th><th>Type</th><th>Difficulty</th>
+                <th>Location</th><th>Warrior</th><th>Mage</th><th>Healer</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions %}
+            <tr>
+                <td>{{ DAYS[s.day] }}</td>
+                <td>{{ s.start_time }}</td>
+                <td>{{ s.title }}</td>
+                <td>{{ s.type }}</td>
+                <td>{{ s.difficulty }}</td>
+                <td>{{ s.location }}</td>
+                {% for role in CAPACITY %}
+                <td>{{ s.taken[role] }}/{{ CAPACITY[role] }}</td>
+                {% endfor %}
+                <td><a href="{{ url_for('session_detail', session_id=s.id) }}">details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

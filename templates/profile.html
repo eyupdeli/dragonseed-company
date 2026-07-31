@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}My adventures &mdash; The Dragonseed Company{% endblock %}
+
+{% block content %}
+<h1>{{ current_user.username }}'s adventures</h1>
+<p>
+    You joined {{ participations|length }} of 3 possible quest sessions this week.
+    Participations are locked from 8 hours before the session starts; to change role
+    or places, cancel and join again while there is still time.
+</p>
+
+{% if participations %}
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>Quest</th><th>Day</th><th>Starts</th><th>Location</th>
+            <th>Role</th><th>Places</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in participations %}
+        <tr>
+            <td><a href="{{ url_for('session_detail', session_id=p.session_id) }}">{{ p.title }}</a></td>
+            <td>{{ DAYS[p.day] }}</td>
+            <td>{{ p.start_time }}</td>
+            <td>{{ p.location }}</td>
+            <td>{{ p.role }}</td>
+            <td>{{ p.places }}</td>
+            <td>
+                {% if p.locked %}
+                <span class="badge locked-badge">locked</span>
+                {% else %}
+                <form method="POST" action="{{ url_for('cancel', part_id=p.id) }}">
+                    <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have not joined any quest yet &mdash; check the <a href="{{ url_for('index') }}">weekly program</a>!</p>
+{% endif %}
+{% endblock %}
