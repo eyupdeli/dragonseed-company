@@ -1,6 +1,5 @@
 # The Dragonseed Company — Guild Management Web App
 
-Exam project for *Introduction to Web Applications* (exam session of 16/07/2026).
 A fantasy adventure guild set during the Dance of the Dragons: low-born dragonseeds
 racing to claim masterless dragons around Driftmark and the Gullet.
 
@@ -24,7 +23,7 @@ All sample accounts use the same password: **northRemembers**
 | username    | role                                          |
 |-------------|-----------------------------------------------|
 | guildmaster | Guild Master (creates quests and sessions)    |
-| council     | Guild Council administrator (Prova finale)    |
+| council     | Guild Council administrator                   |
 | rhaenyra    | adventurer                                    |
 | daemon      | adventurer                                    |
 | aemond      | adventurer                                    |
